@@ -6,5 +6,7 @@ tqdm
 loguru
 sentencepiece==0.1.98
 protobuf<=3.20.0
-scipy==1.10.1
-numpy<2.0.0
+# scipy==1.10.1
+scipy>=1.11.3,<2.0.0
+# numpy<2.0.0
+numpy
