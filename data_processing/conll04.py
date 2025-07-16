@@ -1,3 +1,6 @@
+import sys
+sys.path.append("./data_processing/")
+
 from common import get_pred_set
 
 def get_conll04_labels(dataset):

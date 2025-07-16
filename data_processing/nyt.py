@@ -1,3 +1,6 @@
+import sys
+sys.path.append("./data_processing/")
+
 from common import get_pred_set
 
 def get_nyt_labels(dataset):
@@ -17,7 +20,7 @@ def create_nyt_input(example):
         "ner": ner
     }
 
-def get_nyt_gold_set(example):
+def get_nyt_gold(example):
     gold = set()
     for rel in example['relations']:
         head = rel["head"]["position"]
@@ -38,7 +41,7 @@ def evaluate_nyt(dataset, predictions, threshold=0.5):
     total_fp = 0
     total_fn = 0
     for example, preds in zip(dataset, predictions):
-        gold = get_nyt_gold_set(example)
+        gold = get_nyt_gold(example)
         pred = get_pred_set(preds, threshold)
         
         # for rel in gold:

@@ -1,3 +1,8 @@
+import sys
+sys.path.append("./data_processing/")
+
+from common import get_pred_set
+
 def get_chemprot_labels(dataset):
     labels = set()
     for example in dataset:
