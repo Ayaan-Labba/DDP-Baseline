@@ -1,3 +1,5 @@
+from common import get_pred_set
+
 def get_nyt_labels(dataset):
     labels = set()
     for example in dataset:
@@ -29,17 +31,6 @@ def get_nyt_gold_set(example):
     
     return gold
 
-def get_nyt_pred(prediction, threshold=0.5):
-    pred = set()
-    for rel in prediction:
-        if rel["score"] < threshold:
-            continue
-        h_span = (rel["head_pos"][0], rel["head_pos"][1])
-        t_span = (rel["tail_pos"][0], rel["tail_pos"][1])
-        pred.add((h_span, t_span, rel["label"]))
-    
-    return pred
-
 def evaluate_nyt(dataset, predictions, threshold=0.5):
     assert len(dataset) == len(predictions)
 
@@ -48,7 +39,7 @@ def evaluate_nyt(dataset, predictions, threshold=0.5):
     total_fn = 0
     for example, preds in zip(dataset, predictions):
         gold = get_nyt_gold_set(example)
-        pred = get_nyt_pred(preds, threshold)
+        pred = get_pred_set(preds, threshold)
         
         # for rel in gold:
         #     rel = (rel[0], rel[1], rel[2].lower().strip())
