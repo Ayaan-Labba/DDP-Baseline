@@ -7,7 +7,7 @@ def get_conll04_labels(dataset):
     labels = set()
     for example in dataset:
         for rel in example["relations"]:
-            labels.add(rel["relation_text"])
+            labels.add(rel["type"])
     return sorted(list(labels))
 
 def create_conll04_input(example):
@@ -48,15 +48,44 @@ def evaluate_conll04(dataset, predictions, threshold=0.5):
         gold = get_conll04_gold(example)
         pred = get_pred_set(preds, threshold)
 
-        pred = set()
-        for rel in preds:
-            if rel["score"] < threshold:
-                continue
-            pred.add((tuple(rel["head_pos"]), tuple(rel["tail_pos"]), rel["label"]))
-
         tp += len(pred & gold)
         fp += len(pred - gold)
         fn += len(gold - pred)
+
+    precision = tp / (tp + fp + 1e-8)
+    recall = tp / (tp + fn + 1e-8)
+    f1 = 2 * precision * recall / (precision + recall + 1e-8)
+
+    return {
+        "precision": round(precision, 4),
+        "recall": round(recall, 4),
+        "f1": round(f1, 4),
+        "TP": tp,
+        "FP": fp,
+        "FN": fn
+    }
+
+def fuzzy_evaluate_conll04(dataset, predictions, threshold=0.5):
+    assert len(dataset) == len(predictions)
+
+    tp = fp = fn = 0
+
+    for example, preds in zip(dataset, predictions):
+        gold = get_conll04_gold(example)
+        gold_set = set()
+        for rel in gold:
+            label = 'Located_In' if rel[2] == 'OrgBased_In' else rel[2]
+            gold_set.add((tuple(rel[0]), tuple(rel[1]), label))
+
+        pred = get_pred_set(preds, threshold)
+        pred_set = set()
+        for rel in pred:
+            label = 'Located_In' if rel[2] == 'OrgBased_In' else rel[2]
+            pred_set.add((tuple(rel[0]), tuple(rel[1]), label))
+
+        tp += len(pred_set & gold_set)
+        fp += len(pred_set - gold_set)
+        fn += len(gold_set - pred_set)
 
     precision = tp / (tp + fp + 1e-8)
     recall = tp / (tp + fn + 1e-8)

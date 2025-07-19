@@ -209,5 +209,6 @@ __marimo__/
 # Conda environment
 glirel-env/
 
-# Data Folder
+# Data Folders
 data/
+data_predictions/
