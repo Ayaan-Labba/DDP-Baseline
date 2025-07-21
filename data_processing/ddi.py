@@ -1,7 +1,7 @@
 import sys
 sys.path.append("./data_processing/")
 
-def get_chemprot_labels(dataset):
+def get_ddi_labels(dataset):
     labels = set()
     for example in dataset:
         for rel in example['relations']:
@@ -9,7 +9,7 @@ def get_chemprot_labels(dataset):
     
     return sorted(list(labels))
 
-def create_chemprot_input(example, nlp):
+def create_ddi_input(example, nlp):
     passage = example['passages'][0]['text'][0]  # get the main sentence
     doc = nlp(passage)
     tokens = [token.text for token in doc]
@@ -58,7 +58,7 @@ def create_chemprot_input(example, nlp):
         "text_to_id_map": text_to_id_map,
     }
 
-def evaluate_chemprot(test_data, predicted_relations, threshold=0.5):
+def evaluate_ddi(test_data, predicted_relations, threshold=0.5):
     assert len(test_data) == len(predicted_relations)
 
     tp = fp = fn = 0
@@ -94,7 +94,7 @@ def evaluate_chemprot(test_data, predicted_relations, threshold=0.5):
         "FN": fn
     }
 
-def evaluate_chemprot_by_entity_text(test_data, predicted_relations, threshold=0.5):
+def evaluate_ddi_by_entity_text(test_data, predicted_relations, threshold=0.5):
     tp = fp = fn = 0
 
     for example, preds in zip(test_data, predicted_relations):
@@ -126,7 +126,7 @@ def evaluate_chemprot_by_entity_text(test_data, predicted_relations, threshold=0
         "FN": fn
     }
 
-def get_chemprot_errors(dataset, predictions, threshold=0.0, top_k=3):
+def get_ddi_errors(dataset, predictions, threshold=0.0, top_k=3):
     assert len(dataset) == len(predictions)
 
     error_report = []
@@ -224,7 +224,7 @@ def get_chemprot_errors(dataset, predictions, threshold=0.0, top_k=3):
 
     return error_report
 
-def get_top_chemprot_errors(error_report, top_n=10):
+def get_top_ddi_errors(error_report, top_n=10):
     top_fp_examples = []
     top_fn_examples = []
 
